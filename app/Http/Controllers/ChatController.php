@@ -46,7 +46,8 @@ class ChatController extends Controller
             $message = Message::create([
                 'message' => $request->message,
                 'sender_id' => $request->user()->id, //Người gửi
-                'receiver_id' => $request->id //Người nhận
+                'receiver_id' => $request->id, //Người nhận
+                'status' => 1
             ]);
             $message->load('sender', 'receiver');
             ChatEvent::dispatch($message, $request->id, $request->user()->id);

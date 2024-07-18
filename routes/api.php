@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Broadcast;
 use Laravel\Socialite\Facades\Socialite;
@@ -23,6 +24,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('post-like', [PostController::class, 'postLike']);
 
     Route::get('notification', [NotificationController::class, 'index']);
+
+
+    ///
+    Route::get('list-post-details/{id}', [ProfileController::class, 'listPostDetails']);
+    Route::post('upload-avatar/{id}', [ProfileController::class, 'uploadAvatar']);
+    Route::post('upload-cover-image/{id}', [ProfileController::class, 'uploadCoverImage']);
 });
 Route::get('test/{id}', [NotificationController::class, 'test']);
 // //Đăng nhập fb
@@ -54,3 +61,16 @@ Route::get('auth/google/callback', [AuthenticatedSessionController::class, 'goog
 
 
 Broadcast::routes(["middleware" => "auth:api"]);
+
+Route::get('/routes', function () {
+    $routes = collect(Route::getRoutes())->map(function ($route) {
+        return [
+            'uri' => $route->uri(),
+            'name' => $route->getName(),
+            'methods' => $route->methods(),
+            'action' => $route->getActionName(),
+        ];
+    });
+
+    return response()->json($routes);
+});

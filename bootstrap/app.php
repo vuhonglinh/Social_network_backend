@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Laravel\Passport\Http\Middleware\CheckForAnyScope;
+use Laravel\Passport\Http\Middleware\CheckScopes;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
@@ -20,16 +22,19 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\Session\Middleware\StartSession::class
         ]);
-        $middleware->web(prepend: [
-
-        ]);
+        $middleware->web(prepend: []);
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'scopes' => CheckScopes::class,
+            'scope' => CheckForAnyScope::class,
         ]);
-
-        //
+    })
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->use([
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -2,12 +2,10 @@
 
 namespace App\Providers;
 
-use App\Events\UserEvent;
+
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
-use App\Listeners\UserEventSubscriber;
-use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,5 +30,10 @@ class AppServiceProvider extends ServiceProvider
         });
         // Passport::hashClientSecrets();
         Passport::enablePasswordGrant();
+
+        Passport::tokensCan([
+            'place-orders' => 'Place orders',
+            'check-status' => 'Check order status',
+        ]);
     }
 }
